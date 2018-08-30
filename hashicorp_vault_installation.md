@@ -45,3 +45,28 @@ You can parse value by using jq
 ```
 vault kv get -format=json secret/hello | jq -r .data.data.excited
 ```
+
+Configuring production ready server:
+
+```
+mkdir /etc/vault
+vi /etc/vault/config.hcl
+
+storage "file" {
+ 	path = "./secrets"
+}
+ 
+listener "tcp" {
+	address = "127.0.0.1:8200"
+	tls_disable = 1
+}
+```
+
+Running the vault server with custom config
+
+```
+vault server -config /etc/vault/config.hcl
+export VAULT_ADDR='http://127.0.0.1:8200'
+vault operator init -key-shares 3  -key-threshold 2
+```
+
